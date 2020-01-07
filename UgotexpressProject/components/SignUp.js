@@ -1,7 +1,35 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, TouchableOpacity } from 'react-native';
+import firebase from 'firebase';
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
+import {db} from './config';
 
 export default class SignUp extends Component {
+    state = {
+        email: "",
+        password:"",
+        errorMessage: null
+    }
+
+    
+    SignUp = () => {
+        console.log("SignUp================================>");
+        //const { email,password} = this.state;
+        //firebase.auth().createUserWithEmailAndPassword(this.state.email,this.state.password).then( () => this.props.navigation.navigate('Login')).catch(error => this.setState({errorMessage: error.message}))
+        try {
+            firebase
+                .auth()
+                .createUserWithEmailAndPassword(this.state.email, this.state.password)
+                .then(user => { 
+                       console.log(user);
+                 });
+      } catch (error) {
+            console.log(error.toString(error));
+          }
+    };
+       
+
     render(){
         return (
             <SafeAreaView style={styles.container}>
@@ -27,6 +55,8 @@ export default class SignUp extends Component {
                                 autoCorrect={false}
                                 ref={"emailAddress"}
                                 onSubmitEditing={()=> this.refs.txtPassword.focus()}
+                                onChangeText={email => this.setState({email})}
+                                value={this.state.email}
                             />
                             <TextInput style={styles.input}
                                 placeholder="Enter password"
@@ -36,6 +66,8 @@ export default class SignUp extends Component {
                                 autoCorrect={false}
                                 ref={"txtPassword"}
                                 onSubmitEditing={()=> this.refs.retxtPassword.focus()}
+                                onChangeText={password => this.setState({password})}
+                                value={this.state.password}
                             />
                             <TextInput style={styles.input}
                                 placeholder="ReEnter password"
@@ -46,7 +78,7 @@ export default class SignUp extends Component {
                                 ref={"retxtPassword"}
                             />
 
-                            <TouchableOpacity style={styles.buttonContainer} >
+                            <TouchableOpacity style={styles.buttonContainer} onPress={this.SignUp}>
                                 <Text style={styles.buttonText}>SIGN UP</Text>
                             </TouchableOpacity>
 
